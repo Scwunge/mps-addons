@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": { "item": "numina:component_control_circuit_1" },
+    "D": { "tag": "c:gems/diamond" },
+    "P": { "item": "minecraft:compass" },
+    "W": { "item": "numina:component_wiring_copper" }
+  },
+  "pattern": [
+    " D ",
+    "WPW",
+    " C "
+  ],
+  "result": { "count": 1, "id": "mpsaddons:ore_scanner" }
+}

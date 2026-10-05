@@ -1,0 +1,14 @@
+.gradle/
+build/
+run/
+run-server/
+libs/
+reference/
+.idea/
+*.iml
+.vscode/
+PLAN.md
+HANDOFF*.md
+.claude/
+CLAUDE.md
+run-gametest/

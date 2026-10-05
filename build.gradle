@@ -1,0 +1,68 @@
+plugins {
+	id 'java-library'
+	id 'net.neoforged.moddev' version "${moddev_version}"
+}
+
+base {
+	archivesName = 'ModularPowersuitsAddons'
+}
+
+version = project.mod_version
+group = project.group
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+repositories {
+	mavenCentral()
+	maven { url = 'https://modmaven.dev/' }   // Applied Energistics 2
+}
+
+neoForge {
+	version = project.neo_version
+
+	runs {
+		client {
+			client()
+			gameDirectory = project.file('run')
+		}
+		server {
+			server()
+			gameDirectory = project.file('run-server')
+			programArgument '--nogui'
+		}
+		// Headless dedicated-server boot + GameTests (NeoForge auto-accepts the EULA for gametest servers)
+		gameTestServer {
+			type = 'gameTestServer'
+			gameDirectory = project.file('run-gametest')
+			systemProperty 'neoforge.enabledGameTestNamespaces', 'mpsaddons'
+		}
+	}
+
+	mods {
+		mpsaddons {
+			sourceSet sourceSets.main
+		}
+	}
+}
+
+dependencies {
+	// Modular Powersuits and Numina are not on a public Maven yet. Drop their 1.21.1 jars into libs/ (see README).
+	compileOnly fileTree(dir: 'libs', include: ['ModularPowersuits-*.jar', 'Numina-*.jar'])
+	// Applied Energistics 2 (optional at runtime).
+	compileOnly fileTree(dir: 'libs', include: ['appliedenergistics2-*.jar'])
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8'
+	options.release = 21
+}
+
+processResources {
+	def props = [mod_id: project.mod_id, mod_name: project.mod_name, mod_version: project.mod_version,
+	             mod_license: project.mod_license, mod_authors: project.mod_authors,
+	             minecraft_version: project.minecraft_version, neo_version: project.neo_version]
+	inputs.properties props
+	filesMatching('META-INF/neoforge.mods.toml') {
+		expand props
+	}
+}
