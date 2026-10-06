@@ -4,7 +4,7 @@ plugins {
 }
 
 base {
-	archivesName = 'ModularPowersuitsAddons'
+	archivesName = "ModularPowersuitsAddons-${project.minecraft_version}"
 }
 
 version = project.mod_version

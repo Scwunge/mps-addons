@@ -107,6 +107,29 @@ public class AddonGameTests {
         helper.succeed();
     }
 
+    /** Without Applied Energistics 2 the ME module stays registered but can't be used. */
+    @GameTest(template = TEMPLATE)
+    public static void meModuleNeedsAe2(GameTestHelper helper) {
+        var cap = new ItemStack(AddonItems.ME_WIRELESS_TERMINAL.get()).getCapability(NuminaCapabilities.Module.POWER_MODULE);
+        helper.assertTrue(cap != null && cap.isAllowed() == ModList.get().isLoaded("ae2"),
+                "ME module allowed=" + (cap == null ? "no capability" : cap.isAllowed()) + " but ae2 loaded=" + ModList.get().isLoaded("ae2"));
+        helper.succeed();
+    }
+
+    /** A box full of the same block is valued per block, not per distinct state (the per-scan state cache must not undercount). */
+    @GameTest(template = TEMPLATE)
+    public static void oreScannerCountsRepeatedStates(GameTestHelper helper) {
+        BlockPos base = new BlockPos(2, 1, 2);
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                helper.setBlock(base.offset(x, 0, z), Blocks.IRON_ORE);
+            }
+        }
+        OreScannerModule.ScanResult r = OreScannerModule.scan(helper.getLevel(), helper.absolutePos(base), 1, 0, 1);
+        helper.assertTrue(r.total() == 9 * 4, "nine iron ore were valued " + r.total() + ", expected 36");
+        helper.succeed();
+    }
+
     @GameTest(template = TEMPLATE)
     public static void oreScannerValuesOre(GameTestHelper helper) {
         BlockPos base = new BlockPos(2, 1, 2);

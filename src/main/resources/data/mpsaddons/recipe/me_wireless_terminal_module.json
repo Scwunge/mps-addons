@@ -1,17 +1,33 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "misc",
-  "neoforge:conditions": [ { "type": "neoforge:mod_loaded", "modid": "ae2" } ],
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ae2"
+    }
+  ],
   "key": {
-    "C": { "item": "numina:component_control_circuit_1" },
-    "R": { "item": "ae2:wireless_receiver" },
-    "T": { "item": "ae2:wireless_terminal" },
-    "W": { "item": "numina:component_wiring_copper" }
+    "C": {
+      "item": "numina:component_control_circuit_1"
+    },
+    "R": {
+      "item": "ae2:wireless_receiver"
+    },
+    "P": {
+      "item": "ae2:engineering_processor"
+    },
+    "W": {
+      "item": "numina:component_wiring_copper"
+    }
   },
   "pattern": [
     " R ",
-    "WTW",
+    "WPW",
     " C "
   ],
-  "result": { "count": 1, "id": "mpsaddons:me_wireless_terminal_module" }
+  "result": {
+    "count": 1,
+    "id": "mpsaddons:me_wireless_terminal_module"
+  }
 }

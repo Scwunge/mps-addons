@@ -3,7 +3,7 @@
   "item.mpsaddons.ore_scanner": "Ore Scanner",
   "item.mpsaddons.ore_scanner.desc": "A way to see how valuable the land around you is. Right-click a block to scan into it.",
   "item.mpsaddons.me_wireless_terminal_module": "ME Wireless Terminal",
-  "item.mpsaddons.me_wireless_terminal_module.desc": "Opens an Applied Energistics 2 wireless terminal from your inventory and charges it from the suit.",
+  "item.mpsaddons.me_wireless_terminal_module.desc": "Opens an Applied Energistics 2 wireless terminal (including ae2wtlib terminals) from your inventory and charges it from the suit.",
   "module.tradeoff.mpsaddons.scanner.radius_x": "X Radius",
   "module.tradeoff.mpsaddons.scanner.radius_y": "Y Radius",
   "module.tradeoff.mpsaddons.scanner.radius_z": "Z Radius",
@@ -12,5 +12,6 @@
   "message.mpsaddons.scanner.basic": "[Ore Scanner] Total ore value: %s --- Most valuable: %s",
   "message.mpsaddons.scanner.advanced": "[Ore Scanner] Total ore value: %s --- Most valuable: %s\nSearch size: %sx%sx%s --- Energy used: %s FE",
   "message.mpsaddons.scanner.no_energy": "[Ore Scanner] Not enough energy: a scan needs %s FE.",
-  "message.mpsaddons.me_terminal.none": "[ME Wireless Terminal] No wireless terminal found in your inventory, or not enough energy."
+  "message.mpsaddons.me_terminal.none": "[ME Wireless Terminal] No wireless terminal in your inventory.",
+  "message.mpsaddons.me_terminal.no_energy": "[ME Wireless Terminal] Not enough energy: opening needs %s FE."
 }

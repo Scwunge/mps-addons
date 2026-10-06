@@ -1,9 +1,21 @@
 package net.scwunge.mpsaddons.config;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
+import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Gameplay settings. This is a SERVER config so a server's values are synced to every client (tooltips and the tweak GUI
+ * then match what the server enforces). Module capabilities are also built before any world exists (creative tab, item
+ * tooltips on the main menu), when SERVER configs are not loaded yet, so every read goes through {@link #get} and falls
+ * back to the default value.
+ */
 public class AddonConfig {
     public static final ModConfigSpec SPEC;
 
@@ -45,5 +57,45 @@ public class AddonConfig {
         b.pop();
 
         SPEC = b.build();
+    }
+
+    /** The configured value, or its default while the SERVER config isn't loaded (main menu, before joining a world). */
+    public static <T> T get(ModConfigSpec.ConfigValue<T> value) {
+        return SPEC.isLoaded() ? value.get() : value.getDefault();
+    }
+
+    /** One (block tag, value) pair from {@link #ORE_SCANNER_VALUES}. */
+    public record OreValue(TagKey<Block> tag, int value) {}
+
+    private static volatile List<OreValue> oreValues;
+
+    /** Parsed ore values, cached until the config changes. Bad lines are skipped. */
+    public static List<OreValue> oreValues() {
+        List<OreValue> cached = oreValues;
+        if (cached == null) {
+            List<OreValue> out = new ArrayList<>();
+            for (String s : get(ORE_SCANNER_VALUES)) {
+                int eq = s.lastIndexOf('=');
+                if (eq < 1) {
+                    continue;
+                }
+                try {
+                    ResourceLocation id = ResourceLocation.parse(s.substring(0, eq).trim());
+                    out.add(new OreValue(TagKey.create(Registries.BLOCK, id), Integer.parseInt(s.substring(eq + 1).trim())));
+                } catch (RuntimeException ignored) {
+                    // not a tag id or not a number: skip the line
+                }
+            }
+            cached = List.copyOf(out);
+            oreValues = cached;
+        }
+        return cached;
+    }
+
+    /** Drop cached values when the config is loaded, reloaded or synced from a server. */
+    public static void onConfigChanged(ModConfigEvent event) {
+        if (event.getConfig().getSpec() == SPEC) {
+            oreValues = null;
+        }
     }
 }
