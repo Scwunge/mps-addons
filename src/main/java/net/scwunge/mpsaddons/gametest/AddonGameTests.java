@@ -21,6 +21,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -79,6 +80,29 @@ public class AddonGameTests {
         for (Item module : new Item[]{AddonItems.ORE_SCANNER.get(), AddonItems.ME_WIRELESS_TERMINAL.get()}) {
             helper.assertTrue(new ItemStack(module).getCapability(NuminaCapabilities.Module.POWER_MODULE) != null,
                     module + " has no power module capability");
+        }
+        helper.succeed();
+    }
+
+
+    /** Both modules can be installed into a tier-4 power fist (tier 1 has only typed tool slots) the same way the install/salvage GUI does it. */
+    @GameTest(template = TEMPLATE)
+    public static void modulesInstallInPowerFist(GameTestHelper helper) {
+        for (Item module : new Item[]{AddonItems.ORE_SCANNER.get(), AddonItems.ME_WIRELESS_TERMINAL.get()}) {
+            if (module == AddonItems.ME_WIRELESS_TERMINAL.get() && !ModList.get().isLoaded("ae2")) {
+                continue; // the ME module is disabled without Applied Energistics 2
+            }
+            ItemStack fist = new ItemStack(item("powersuits:powerfist4"));
+            IModularItem modular = NuminaCapabilities.getModularItemOrModeChangingCapability(fist);
+            ItemStack stack = new ItemStack(module);
+            StringBuilder why = new StringBuilder();
+            boolean installed = false;
+            for (int i = 0; i < modular.getSlots() && !installed; i++) {
+                boolean valid = modular.isModuleValidForPlacement(i, stack);
+                why.append(i).append(valid ? "=ok " : "=no ");
+                installed = valid && modular.insertItem(i, stack.copy(), false).isEmpty();
+            }
+            helper.assertTrue(installed, module + " could not be installed in a power fist (slots: " + why + ")");
         }
         helper.succeed();
     }
